@@ -41,7 +41,16 @@ class UserController extends Controller
         if (!FacadesAuth::attempt($request->only('email', 'password'))) {
             return response()->json(["message" => 'login credintials does not match!'], 401);
         }
+        
+
+
+
         $uesr = User::where('email', $request->email)->first();
+        $token = $uesr->createToken('auth Token')->plainTextToken;
+
         return response()->json($uesr, 200);
+
+
+
     }
 }
