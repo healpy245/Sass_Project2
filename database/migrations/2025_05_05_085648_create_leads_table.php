@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->required();
-            $table->string('phone')->required(10);
+            $table->string('name');
+            $table->string('phone',10);
             $table->string('email')->unique();
             $table->string('address');
-            $table->string('ID_number')->required();
-            $table->enum('status', ['new', 'pending', 'done']);
+            $table->string('ID_number');
+            $table->enum('status', ['new', 'pending', 'done'])->default('new');
 
 
             $table->timestamps();
