@@ -64,6 +64,28 @@ class UserController extends Controller
         return response()->json([
             'message' => 'failed',
         ], 200);
+
+    }
+
+
+        public function index(Request $request)
+        {
+            $users = $request->user()->company()->users();
+            return response()->json($users, 200);
+        }
+
+
+        public function show(Request $request, $id)
+        {
+            $user = $request->user()->company()->users()->findOrFail($id);
+            return response()->json($user, 200);
+
+        }
+        public function destroy(Request $request, $id)
+        {
+            $user = $request->user()->company()->users()->findOrFail($id);
+            $user->delete();
+        }
     }
 
 

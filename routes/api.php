@@ -23,12 +23,21 @@ Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanct
 
 
 Route::middleware(['auth:sanctum', RoleMiddleware::class . ':super_admin'])->group(function () {
-    Route::apiResource('/admin/dashboard/companies', CompaniesController::class);
+    Route::apiResource('/admin/companies', CompaniesController::class);
 });
 
 
 
 
 Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin,super_admin'])->group(function () {
-    Route::apiResource('/company/admin/dashboard', CompaniesController::class);
+    Route::apiResource('/company/leads', LeadController::class);
+});
+
+
+
+
+
+
+Route::middleware(['auth:sanctum', RoleMiddleware::class .'admin,super_admin'])->group(function () {
+    Route::apiResource('/users/admin', UserController::class);
 });

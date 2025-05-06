@@ -28,7 +28,7 @@ class CompaniesController extends Controller
     {
         $company = $request->user()->company();
         $request->validate([
-            'name' => 'required'
+            'name' => 'required|string'
         ]);
         $company->update($request->all());
         return response()->json($company, 200);
