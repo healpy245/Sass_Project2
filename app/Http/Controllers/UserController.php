@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Hash;
 
+use function Laravel\Prompts\password;
 use function PHPUnit\Framework\returnSelf;
 
 class UserController extends Controller
@@ -23,11 +24,24 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => bcrypt($request->password),
             'company_id' => $request->company_id
         ]);
         return response()->json($user, 201);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public function login(Request $request)
@@ -38,19 +52,29 @@ class UserController extends Controller
         ]);
 
 
-        if (!FacadesAuth::attempt($request->only('email', 'password'))) {
-            return response()->json(["message" => 'login credintials does not match!'], 401);
+        $user = User::where('email', $request->email)->first();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+            $token = $user->createToken('Token')->plainTextToken;
+            return response()->json(['message' => 'Login successful', 'token' => $token], 200);
         }
-        
 
 
-
-        $uesr = User::where('email', $request->email)->first();
-        $token = $uesr->createToken('auth Token')->plainTextToken;
-
-        return response()->json($uesr, 200);
-
-
-
+        return response()->json([
+            'message' => 'failed',
+        ], 200);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    public function logout() {}
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('ID_number');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('company_id')->constrained('comapny')->cascadeOnDelete();
+            $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             $table->enum('status', ['new', 'pending', 'done'])->default('new');
 
 

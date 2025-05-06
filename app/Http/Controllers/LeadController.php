@@ -19,7 +19,7 @@ class LeadController extends Controller
     }
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string',
             'phone' => 'required|string',
             'email' => 'nullable|email',
@@ -27,15 +27,8 @@ class LeadController extends Controller
             'user_id' => 'nullable|exists:users,id'
         ]);
 
-        $lead = Lead::create([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'address' => $request->address,
-            'company_id' => Auth::user()->company_id,
-            'user_id' => $request->user_id,
-        ]);
-        return response()->json(['lead' => $lead], 200);
+        $lead = Lead::create($validated);
+        return response()->json(['lead' => $lead], 201);
     }
 
     public function show($id)
@@ -47,7 +40,7 @@ class LeadController extends Controller
     public function update(Request $request, $id)
     {
         $lead = Lead::where('company_id', Auth::user()->company_id)->findOrFail($id);
-        $request->validate([
+      $validated = $request->validate([
             'name' => 'string',
             'phone' => 'string',
             'email' => 'email',
@@ -56,15 +49,7 @@ class LeadController extends Controller
             'user_id' => 'exists:users,id'
         ]);
 
-        $lead->update($request->only([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'address' => $request->address,
-            'status' => $request->status,
-            'user_id' => $request->user_id
-
-        ]));
+        $lead->update($request->only($validated));
 
         return response()->json(['lead edited'=> $lead], 200);
     }
