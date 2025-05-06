@@ -86,7 +86,7 @@ class UserController extends Controller
             $user = $request->user()->company()->users()->findOrFail($id);
             $user->delete();
         }
-    }
+    
 
 
 
