@@ -14,15 +14,21 @@ Route::get('/user', function (Request $request) {
 
 
 
-Route::post('register',[UserController::class,'register']);
-
-Route::post('login',[UserController::class,'login']);
-
-
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
+Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 
 
 
 
-Route::middleware(['auth:sanctum', RoleMiddleware::class.':super_admin'])->group(function () {
+
+Route::middleware(['auth:sanctum', RoleMiddleware::class . ':super_admin'])->group(function () {
     Route::apiResource('/admin/dashboard/companies', CompaniesController::class);
+});
+
+
+
+
+Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin,super_admin'])->group(function () {
+    Route::apiResource('/company/admin/dashboard', CompaniesController::class);
 });

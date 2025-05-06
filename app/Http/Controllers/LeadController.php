@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Auth;
 class LeadController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $leads = Lead::where('company_id', Auth::user()->company_id)->get();
+        $leads = $request->user()->leads();
         return response()->json(['leads' => $leads], 200);
     }
     public function store(Request $request)
@@ -24,23 +24,28 @@ class LeadController extends Controller
             'phone' => 'required|string',
             'email' => 'nullable|email',
             'address' => 'nullable|string',
-            'user_id' => 'nullable|exists:users,id'
         ]);
 
-        $lead = Lead::create($validated);
-        return response()->json(['lead' => $lead], 201);
+        $lead = Lead::create([
+            'name' => $validated['name'],
+            'phone' => $validated['phone'],
+            'email' => $validated['email'],
+            'address' => $validated['address'],
+            'user_id' => $request->user()->id
+        ]);
+        return response()->json(['lead created' => $lead], 201);
     }
 
-    public function show($id)
+    public function show(Request $request,$id)
     {
-        $lead = Lead::where('company_id', Auth::user()->company_id)->findOrFail($id);
+        $lead = $request->user()->leads()->findOrFail($id);
         return response()->json(['lead' => $lead], 200);
     }
 
     public function update(Request $request, $id)
     {
-        $lead = Lead::where('company_id', Auth::user()->company_id)->findOrFail($id);
-      $validated = $request->validate([
+        $lead = $request->user()->leads()->findOrFail($id);
+        $validated = $request->validate([
             'name' => 'string',
             'phone' => 'string',
             'email' => 'email',
@@ -51,6 +56,15 @@ class LeadController extends Controller
 
         $lead->update($request->only($validated));
 
-        return response()->json(['lead edited'=> $lead], 200);
+        return response()->json(['lead edited' => $lead], 200);
     }
+
+
+    public function destroy(Request $request,$id)
+    {
+        $lead = $request->user()->leads()->findOrFail($id);
+        $lead->delete();
+    }
+
+
 }

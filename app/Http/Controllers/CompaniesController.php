@@ -3,39 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Facade;
 
 class CompaniesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $companies = Company::all();
-        return response()->json(['data'=>$companies, 'super admin is'=> Auth::user()],200);
+        $user = $request->user();
+        $users = $user->company()->users();
+        $leads = $user->company()->leads();
+        return response()->json([
+            "company" => $user->company(),
+            "users" => $users,
+            "leads" => $leads
+        ], 200);
+    }
 
-    }
-    public function store(Request $request)
+
+
+    public function update(Request $request)
     {
-        $company = Company::create($request->all());
-        return response()->json($company,201);
-    }
-    public function show($id)
-    {
-        $company = Company::findOrFail($id);
-        return response()->json($company,200);
-    }
-    public function update(Request $request, $id)
-    {
-        $company = Company::findOrFail($id);
+        $company = $request->user()->company();
+        $request->validate([
+            'name' => 'required'
+        ]);
         $company->update($request->all());
-        return response()->json($company,200);
-
+        return response()->json($company, 200);
     }
-    public function destroy($id)
+
+
+
+
+
+    public function destroy(Request $request)
     {
-        $company = Company::findOrFail($id);
+        $company = $request->user()->company();
         $company->delete();
-        return response()->json(['message'=>'deleted'],200);
+        return response()->json(['message' => 'deleted'], 200);
     }
 }
