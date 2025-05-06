@@ -90,6 +90,19 @@ class UserController extends Controller
 
 
 
+    public function refresh(Request $request)
+    {
+        $user = $request->user();
+        $user->currentAccessToken()->delete();
+        $user->createToken('auth_token')->plainTextToken;
+        return response()->json(['token' => $user->currentAccessToken(), 200]);
+    }
+
+
+
+
+
+
 
 
 
@@ -98,7 +111,6 @@ class UserController extends Controller
     {
         $users = $request->user()->company()->users();
         return response()->json(data: UserDTO::collection($users));
- 
     }
 
 

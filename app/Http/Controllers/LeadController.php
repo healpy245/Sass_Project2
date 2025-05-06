@@ -37,7 +37,7 @@ class LeadController extends Controller
         $validated = $request->validate([
             'name' => 'required|string',
             'phone' => 'required|string',
-            'email' => 'required|email',
+            'email' => 'required|email|unique',
             'address' => 'nullable|string',
             
         ]);
