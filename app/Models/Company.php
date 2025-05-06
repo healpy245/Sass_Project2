@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class Company extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
 
 

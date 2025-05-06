@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class Lead extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
 
 

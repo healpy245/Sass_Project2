@@ -53,13 +53,13 @@ class LeadController extends Controller
 
     public function show(Request $request, $id)
     {
-        $lead = $request->user()->leads()->find($id)->first();
+        $lead = $request->user()->leads->find($id)->first();
         return response()->json(data: LeadDTO::fromModel($lead));
     }
 
     public function update(Request $request, $id)
     {
-        $lead = $request->user()->leads()->findOrFail($id)->first();
+        $lead = $request->user()->leads->findOrFail($id)->first();
         $validated = $request->validate([
             'name' => 'string',
             'phone' => 'string',
@@ -82,7 +82,7 @@ class LeadController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $lead = $request->user()->leads()->findOrFail($id);
+        $lead = $request->user()->leads->findOrFail($id);
         $lead->delete();
     }
 }

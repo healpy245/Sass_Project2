@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
+use App\Models\User;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -17,6 +18,7 @@ Route::get('/user', function (Request $request) {
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('refresh', [UserController::class,'refresh'])->middleware('auth:sanctum');
 
 
 
@@ -38,6 +40,8 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin,super_admin']
 
 
 
-Route::middleware(['auth:sanctum', RoleMiddleware::class .'admin,super_admin'])->group(function () {
-    Route::apiResource('/users/admin', UserController::class);
+Route::middleware(['auth:sanctum', RoleMiddleware::class .':admin,super_admin'])->group(function () {
+    // Route::get('users/admin', [UserController::class, 'index']);
+    Route::apiResource('users/admin', UserController::class);
+
 });
