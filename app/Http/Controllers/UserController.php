@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\DTOs\UserDTO;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
@@ -14,6 +16,11 @@ use function PHPUnit\Framework\returnSelf;
 
 class UserController extends Controller
 {
+
+
+
+
+
     public function register(Request $request)
     {
         $request->validate([
@@ -28,7 +35,7 @@ class UserController extends Controller
             'password' => bcrypt($request->password),
             'company_id' => $request->company_id
         ]);
-        return response()->json($user, 201);
+        return response()->json(data: UserDTO::fromModel($user));
     }
 
 
@@ -64,7 +71,6 @@ class UserController extends Controller
         return response()->json([
             'message' => 'failed',
         ], 200);
-
     }
 
 
@@ -73,10 +79,10 @@ class UserController extends Controller
 
 
 
-    public function logout(Request $request) 
+    public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return response()->json(['message'=>'logout successful'],200);
+        return response()->json(['message' => 'logout successful'], 200);
     }
 
 
@@ -88,42 +94,24 @@ class UserController extends Controller
 
 
 
-        public function index(Request $request)
-        {
-            $users = $request->user()->company()->users();
-            return response()->json($users, 200);
-        }
+    public function index(Request $request)
+    {
+        $users = $request->user()->company()->users();
+        return response()->json(data: UserDTO::collection($users));
+ 
+    }
 
 
-        public function show(Request $request, $id)
-        {
-            $user = $request->user()->company()->users()->findOrFail($id);
-            return response()->json($user, 200);
+    public function show(Request $request, $id)
+    {
+        $user = $request->user()->company()->users()->findOrFail($id)->first();
+        return response()->json(data: UserDTO::fromModel($user));
+    }
 
 
-
-
-
-        }
-
-
-        public function destroy(Request $request, $id)
-        {
-            $user = $request->user()->company()->users()->findOrFail($id);
-            $user->delete();
-        }
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public function destroy(Request $request, $id)
+    {
+        $user = $request->user()->company()->users()->findOrFail($id);
+        $user->delete();
+    }
 }

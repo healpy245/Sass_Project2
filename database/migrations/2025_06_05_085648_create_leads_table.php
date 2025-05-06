@@ -24,7 +24,7 @@ return new class extends Migration
             $table->uuid('company_id');
 
 
- $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
 
 
