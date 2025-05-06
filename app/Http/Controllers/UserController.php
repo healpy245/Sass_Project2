@@ -68,6 +68,26 @@ class UserController extends Controller
     }
 
 
+
+
+
+
+
+    public function logout(Request $request) 
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message'=>'logout successful'],200);
+    }
+
+
+
+
+
+
+
+
+
+
         public function index(Request $request)
         {
             $users = $request->user()->company()->users();
@@ -80,7 +100,13 @@ class UserController extends Controller
             $user = $request->user()->company()->users()->findOrFail($id);
             return response()->json($user, 200);
 
+
+
+
+
         }
+
+
         public function destroy(Request $request, $id)
         {
             $user = $request->user()->company()->users()->findOrFail($id);
@@ -99,9 +125,5 @@ class UserController extends Controller
 
 
 
-    public function logout(Request $request) 
-    {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message'=>'logout successful'],200);
-    }
+
 }

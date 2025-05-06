@@ -22,8 +22,9 @@ class LeadController extends Controller
         $validated = $request->validate([
             'name' => 'required|string',
             'phone' => 'required|string',
-            'email' => 'nullable|email',
+            'email' => 'required|email',
             'address' => 'nullable|string',
+            
         ]);
 
         $lead = Lead::create([
@@ -31,7 +32,8 @@ class LeadController extends Controller
             'phone' => $validated['phone'],
             'email' => $validated['email'],
             'address' => $validated['address'],
-            'user_id' => $request->user()->id
+            'user_id' => $request->user()->id,
+            'company_id' => $request->user()->company_id
         ]);
         return response()->json(['lead created' => $lead], 201);
     }

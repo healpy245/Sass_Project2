@@ -12,11 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
-            $table->enum('role',['admin','super_admin','user'])->default('user');
-            $table->foreignId('company_id')->nullable()->constrained('companies')->cascadeOnDelete();
+            $table->enum('role', ['admin', 'super_admin', 'user'])->default('user');
+
+            $table->uuid('company_id')->nullable();
+            $table->foreign('company_id')->references('id')->on('companies')->cascadeOnDelete();
+            
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
@@ -48,7 +51,4 @@ return new class extends Migration
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
-
-
-
 };
