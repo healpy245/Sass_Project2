@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\LeadStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -28,7 +29,7 @@ return new class extends Migration
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
 
 
-            $table->enum('status', ['new', 'pending', 'done'])->default('new');
+            $table->string('status')->default(LeadStatus::New->value);
             $table->softDeletes();
 
 
