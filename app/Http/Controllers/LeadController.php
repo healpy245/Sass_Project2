@@ -27,15 +27,17 @@ class LeadController extends Controller
 
     public function index(Request $request)
     {
-        $leads = $request->user()->leads();
-        return response()->json(data: LeadDTO::collection($leads));
+        $leads = $request->user()->leads;
+        // return response()->json(data: LeadDTO::collection($leads));
+        return response()->json($leads);
     }
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string',
             'phone' => 'required|string',
-            'email' => 'required|email|unique',
+            'email' => 'required|email',
+            'ID_number'=>'required|string',
             'address' => 'nullable|string',
 
         ]);
@@ -45,10 +47,13 @@ class LeadController extends Controller
             'phone' => $validated['phone'],
             'email' => $validated['email'],
             'address' => $validated['address'],
+            'ID_number' => $validated['ID_number'],
             'user_id' => $request->user()->id,
             'company_id' => $request->user()->company_id
         ]);
-        return response()->json(data: LeadDTO::fromModel($lead));
+        // return response()->json(data: LeadDTO::fromModel($lead));
+        return response()->json($lead);
+
     }
 
     public function show(Request $request, $id)

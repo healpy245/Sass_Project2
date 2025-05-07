@@ -43,5 +43,5 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin,super_admin']
 Route::middleware(['auth:sanctum', RoleMiddleware::class .':admin,super_admin'])->group(function () {
     // Route::get('users/admin', [UserController::class, 'index']);
     Route::apiResource('users/admin', UserController::class);
-
+    Route::put("users/admin",[UserController::class,'update']);
 });
