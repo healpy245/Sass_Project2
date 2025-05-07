@@ -158,9 +158,9 @@ class UserController extends Controller
 
 
 
-    public function show(Request $request, $id)
+    public function show(Request $request)
     {
-        $user = $request->user()->company->users->findOrFail($id)->first();
+        $user = $request->user()->company->users->where('email', $request->email)->first();
 
         if (!$user) {
             return response()->json(['message' => 'User not found in your company.'], 404);
@@ -180,9 +180,9 @@ class UserController extends Controller
 
 
 
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request)
     {
-        $user = $request->user()->company->users->findOrFail($id);
+        $user = $request->user()->company->users->where('email', $request->email)->first();
 
         if (!$user) {
             return response()->json(['message' => 'User not found in your company.'], 404);
