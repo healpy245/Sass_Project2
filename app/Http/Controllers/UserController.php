@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\UserDTO;
+use App\Enums\UserRole;
 use App\Models\Company;
 use App\Models\User;
+use Illuminate\Validation\Rule as ValidationRule;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,14 +32,20 @@ class UserController extends Controller
             'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'company_name' => 'required|exists:companies,name',
-            'role' => 'required'
+            'role' => [
+                'nullable',
+                'string',
+                ValidationRule::in(array_column(UserRole::cases(), 'value'))
+            ]
         ]);
+
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'company_id' => Company::where('name', $request->company_name)->first()->id,
-            'role' => $request->role
+            'role' => $request->input('role', 'user')
         ]);
         return response()->json(UserDTO::fromModel($user));
     }
@@ -46,6 +55,7 @@ class UserController extends Controller
 
 
 
+    // ====================================================================================
 
 
 
@@ -85,6 +95,11 @@ class UserController extends Controller
 
 
 
+    // ====================================================================================
+
+
+
+
 
 
     public function logout(Request $request)
@@ -92,6 +107,11 @@ class UserController extends Controller
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'logout successful'], 200);
     }
+
+
+
+
+    // ====================================================================================
 
 
 
@@ -110,6 +130,8 @@ class UserController extends Controller
 
 
 
+    // ====================================================================================
+
 
 
 
@@ -127,6 +149,15 @@ class UserController extends Controller
     }
 
 
+
+
+
+    // ====================================================================================
+
+
+
+
+
     public function show(Request $request, $id)
     {
         $user = $request->user()->company->users->findOrFail($id)->first();
@@ -139,6 +170,16 @@ class UserController extends Controller
     }
 
 
+
+
+
+    // ====================================================================================
+
+
+
+
+
+
     public function destroy(Request $request, $id)
     {
         $user = $request->user()->company->users->findOrFail($id);
@@ -149,13 +190,26 @@ class UserController extends Controller
 
         $user->delete();
     }
+
+
+
+    // ====================================================================================
+
+
+
+
+
     public function update(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|email|exists:users,email',
             'password' => 'required|string',
-            'role' => 'required'
+            'role' => [
+                'nullable',
+                'string',
+                ValidationRule::in(array_column(UserRole::cases(), 'value'))
+            ]
         ]);
         $user = $request->user()->company->users()->where('email', $validated['email'])->first();
 
@@ -167,7 +221,7 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
-            'role' => $validated['role'],
+            'role' => $request->input('role', 'user')
         ]);
 
         return response()->json(UserDTO::fromModel($user->fresh()));

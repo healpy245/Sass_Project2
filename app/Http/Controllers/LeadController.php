@@ -14,11 +14,11 @@ use Illuminate\Validation\Rule as ValidationRule;
 class LeadController extends Controller
 {
 
-    public function getLeadData(Lead $lead) {}
 
 
 
 
+    // ====================================================================================
 
 
 
@@ -28,16 +28,25 @@ class LeadController extends Controller
     public function index(Request $request)
     {
         $leads = $request->user()->leads;
-        // return response()->json(data: LeadDTO::collection($leads));
-        return response()->json($leads);
+        return response()->json(data: LeadDTO::collection($leads));
+        // return response()->json($leads);
     }
+
+
+
+
+    // ====================================================================================
+
+
+
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string',
             'phone' => 'required|string',
             'email' => 'required|email',
-            'ID_number'=>'required|string',
+            'ID_number' => 'required|string',
             'address' => 'nullable|string',
 
         ]);
@@ -49,12 +58,19 @@ class LeadController extends Controller
             'address' => $validated['address'],
             'ID_number' => $validated['ID_number'],
             'user_id' => $request->user()->id,
-            'company_id' => $request->user()->company_id
+            'company_id' => $request->user()->company_id,
+            'status' => 'new'
         ]);
-        // return response()->json(data: LeadDTO::fromModel($lead));
-        return response()->json($lead);
-
+        return response()->json(data: LeadDTO::fromModel($lead));
     }
+
+
+
+
+    // ====================================================================================
+
+
+
 
     public function show(Request $request, $id)
     {
@@ -62,9 +78,16 @@ class LeadController extends Controller
         return response()->json(data: LeadDTO::fromModel($lead));
     }
 
-    public function update(Request $request, $id)
+
+
+
+    // ====================================================================================
+
+
+
+    public function update(Request $request)
     {
-        $lead = $request->user()->leads->findOrFail($id)->first();
+        $lead = $request->user()->leads->where('email', $request->email)->first();
         $validated = $request->validate([
             'name' => 'string',
             'phone' => 'string',
@@ -73,16 +96,21 @@ class LeadController extends Controller
             'status' => [
                 'string',
                 ValidationRule::in(array_column(LeadStatus::cases(), 'value'))
-            ],
-            'user_id' => 'exists:users,id'
-
+            ]
         ]);
 
         $lead->update($request->only($validated));
-
-
         return response()->json(data: LeadDTO::fromModel($lead));
     }
+
+
+
+
+
+    // ====================================================================================
+
+
+
 
 
     public function destroy(Request $request, $id)

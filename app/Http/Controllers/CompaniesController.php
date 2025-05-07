@@ -24,23 +24,33 @@ class CompaniesController extends Controller
 
 
 
+    // ====================================================================================
+
+
+
+
+
     public function update(Request $request)
     {
-        $company = $request->user()->company();
+        $company = Company::where('name', $request->name)->first();
         $request->validate([
             'name' => 'required|string'
         ]);
         $company->update($request->all());
-        return response()->json($company, 200);
+        return response()->json($company->name, 200);
     }
 
+
+
+
+        // ====================================================================================
 
 
 
 
     public function destroy(Request $request)
     {
-        $company = $request->user()->company();
+        $company = Company::where('name', $request->name)->first();
         $company->delete();
         return response()->json(['message' => 'deleted'], 200);
     }
