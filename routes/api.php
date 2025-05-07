@@ -31,7 +31,7 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':super_admin'])->gro
 
 
 
-Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin,super_admin'])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/company/leads', LeadController::class);
 });
 
